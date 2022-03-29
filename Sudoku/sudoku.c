@@ -8,4 +8,4 @@ int main(){
 	}
 	
 	
-test 2
+test 6
