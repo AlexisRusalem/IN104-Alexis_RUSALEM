@@ -1,60 +1,7 @@
-/*
-#include <stdio.h>
-#include <stdlib.h>
-
-
-		
-
-	
-int main(){
-	int area[9][9];
-	int i, j;
-
-// On génère la matrice aléatoirement 
-	for(j=0;j<9;++j){
-		for(i=0;i<9;++i){
-			area[j][i]=(i+j*3+j/3)%9 +1;
-			}
-			}
-
-	
-	// on demande à l'utilisateur la difficulté souhaitée 
-	
-	int niveau=0;
-	int ligne=0;
-	int colonne=0;
-	printf("Niveau de difficulté (easy 1, medium 2, hard 3):\n");
-	scanf("%d\n", &niveau);
-	
-	// on supprime aléatoirement des cases
-	for(i=0;i<9;++i)
-		{
-		for(j=0;j<niveau;++j)
-		{
-		area[i][rand()%9]=0;
-		}}
-	
-
-	// Afficher la matrice
-	for(i=0;i<9;++i)
-		{
-		for(j=0;j<9;++j){
-			printf("%d  ", area[i][j]);
-			}
-		printf("\n");
-	}
-	printf("Quelle case voulez vous remplir: \n");
-	printf("ligne:  ");
-	scanf("%d\n", &ligne);
-	printf("colonne:");
-	scanf("%d\n", &colonne);
-	}
-
-*/
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 
 // Fonction d'affichage
@@ -124,23 +71,38 @@ bool estValide (int grille[9][9], int position)
     return false;
 }
 
-bool coup_valide (int grille[9][9], int i, int j, int k)
+bool coup(int grille[9][9])
 {
-	if (((i<=0) && (i<9)) && ((j<=0) && (j<9))){
-		printf("Hors de la grille\n");
-		return false;}
-	if (0>k || k>=9){
-		printf("Valeur incorrecte !\n");
-		return false;
-	}
-	if (grille[i][j]==0)
-	    	return true;
+    		int ligne;
+    		int colonne;
+    		int valeur;
+		printf("Selectionnez la ligne (de 1 à 9):");
+	    	scanf("%u", &ligne);
+	    	if ((ligne<=0) || (ligne>9)){
+	    		printf("Hors de la grille\n");
+	    		return false;}
+	    
+		printf("Selectionnez la colonne (de 1 à 9):");
+  		scanf("%u", &colonne);
+  		if ((colonne<=0) || (colonne>9)){
+	    		printf("Hors de la grille\n");
+	    		return false;}
+	    	if (grille[ligne-1][colonne-1]!=0){
+			printf("Case déjà remplie\n");
+			return false;}
+			
+		printf("Selectionnez la valeur (de 1 à 9):");
+	    	scanf("%u", &valeur);
+	    	if (valeur<0 || valeur>9){
+			printf("Valeur incorrecte !\n");
+			return false;}
+		else {
+			grille[ligne-1][colonne-1]=valeur;
+			affichage(grille);
+			return true;}
+			
 	    	
-	else {
-		printf("Case déjà remplie\n");
-		return false;
 } 
-}
 
 
 void remplir_diagonales_3x3(int grille[9][9]){
@@ -149,9 +111,22 @@ void remplir_diagonales_3x3(int grille[9][9]){
 		}
 	}
 
+
 int main(){
 	int niveau;
-	int grille_finale[9][9];
+	int grille_finale[9][9]=
+    {
+        {0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0},
+  
+    };
 	int grille[9][9] =
     {
         {0,0,0,0,0,0,0,0,0},
@@ -165,15 +140,13 @@ int main(){
         {0,0,0,0,0,0,0,0,0},
   
     };
+
     remplir_diagonales_3x3(grille);
     estValide(grille,0);
     // Sauvegarde de la grille complétée
     
-    for(int i=0;i<9;++i){
-    	for(int j=0;j<9;++j){
-    		grille_finale[i][j]==grille[i][j];
-    		}} 
-    
+    memcpy(grille_finale, grille, sizeof grille);
+
     printf("Niveau de difficulté (easy 1, medium 2, hard 3):");
     scanf("%d", &niveau);
 	// on supprime aléatoirement des cases
@@ -186,27 +159,14 @@ int main(){
 		}}
     printf("Grille à résoudre\n");
     affichage(grille);
-    int ligne;
-    int colonne;
-    int valeur;
+    
 
-    while(grille_finale!=grille){   
-	    	printf("Selectionnez la ligne (de 1 à 9):");
-	    	scanf("%u", &ligne);
-		printf("Selectionnez la colonne (de 1 à 9):");
-  		scanf("%u", &colonne);
-	    	if (((ligne>=0) && (ligne>9)) && ((colonne>=0) && (colonne>9)))
-			printf("Hors de la grille\n");
-	    	printf("Selectionnez la valeur (de 1 à 9):");
-	    	scanf("%u", &valeur);
-	    	if (0>valeur || valeur>=9)
-			printf("Valeur incorrecte !\n");
-	    	if (grille[ligne][colonne]!=0){
-			printf("Case déjà remplie\n");}
-		grille[ligne-1][colonne-1]=valeur;
-		affichage(grille);
+
+    while(memcmp(grille_finale, grille, sizeof grille)!=0){   
+	    	while(coup(grille)==false){
+	    		affichage(grille_finale);}
 	    
 	 }
-	printf("Vous avez gagné ! Bravo !");
+	printf("Vous avez gagné ! Bravo !\n");
     }
 
