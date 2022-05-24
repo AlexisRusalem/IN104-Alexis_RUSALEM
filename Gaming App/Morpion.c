@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "Morpion.h"
+
 
 
 int* creer_grille(){
@@ -66,7 +68,8 @@ void affichage_symbol(int* grille){
 
 
 void placer(int* grille, int chiffre, int joueur) {
-	grille[chiffre-1]=joueur;
+	if(grille[chiffre-1]==0){
+ 		grille[chiffre-1]=joueur;}
 	}
 
  
@@ -132,7 +135,7 @@ void placer(int* grille, int chiffre, int joueur) {
 
 
 
-int main(){
+void play_morpion(){
  	int compteur=0;
  	//int j=0;
  	
