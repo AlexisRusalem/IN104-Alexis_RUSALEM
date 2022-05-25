@@ -138,29 +138,41 @@ void deplacer_ghost(){
         pacman.ny=0;
     }
 
-    //Permet de deplacer les fantomes (dans l'ordre par défault: en bas, en haut, à gauche, à droite):
-    
+
+// Déplace aléatoirement les fantômes :
+ 
     for (int i=0; i<nb_ghosts; i++){
-        int a=allghosts[i].coord.x;
+        int a=allghosts[i].coord.x;   // on récupère les coordonnées du ghost
         int b=allghosts[i].coord.y;
-        int newa=a;
+         int newa=a;
         int newb=b;
-        if(area[(a+1)%width ][b]=='.' || area[(a+1)%width ][b]==' '){  // on regarde si la voie est libre en bas
-            newa=(a+1)%width;
-        }
-        else if(area[(a-1)%width ][b]=='.' || area[(a-1)%width ][b]== ' ' ){ // on regarde si la voie est libre en haut
-            newa=(a-1)%width;
-        }
-        else if(area[a][(b-1)%height]=='.'|| area[a][(b-1)%height]==' '){ // on regarde si la voie est libre à gauche
-            newb=(b-1)%height;
-        }
-        else if(area[a][(b+1)%height]=='.'|| area[a][(b+1)%height]==' ' ){ // on regarde si la voie est libre à droite
-            newb=(b+1)%height;
-        }
-         area[a][b]='.';
-         area[newa][newb]='G';
+        int k=rand()%3-1;
+        int j=rand()%2;
+        
+       
+       if (area[(a+k*j)%width][(b+k*abs(j-1)%2)%height]=='.' || area[(a+k*j)%width][(b+k*abs(j-1)%2)%height]==' ') {
+        	
+        
+        newa=(a+k*j)%width;
+        newb=(b+k*abs(j-1)%2)%height;}
+        
+	else {
+	k=rand()%3-1;
+	j=rand()%2;
+	if (area[(a+k*j)%width][(b+k*abs(j-1)%2)%height]=='.' || area[(a+k*j)%width][(b+k*abs(j-1)%2)%height]==' ') {
+        	
+        
+        newa=(a+k*j)%width;
+        newb=(b+k*abs(j-1)%2)%height;}}	
+        
+        area[a][b]='.';
+        area[newa][newb]='G';
+        
+  
+         
         allghosts[i].coord.x=newa;
         allghosts[i].coord.y=newb;
+        
 
     };
     
@@ -170,6 +182,7 @@ void deplacer_ghost(){
 //Permet le deplacement du pacman
 
  void deplacer_pacman(){
+    
     area[pacman.coord.x][pacman.coord.y]=' ';
     
     
@@ -190,6 +203,7 @@ void deplacer_ghost(){
             
         }
     area[pacman.coord.x][pacman.coord.y]='P';
+
 };
 
 
@@ -223,11 +237,23 @@ bool A=true;
 
 while(A){
     deplacer_ghost();
+     //int l =3;
+    //printf("%d", l);
+    //afficher_grille(area); 
     deplacer_pacman();
+    
     A=vie_restante(pacman,area);
 
 
-}
+}/*
+for (int i=0; i<3; i++){
+    deplacer_ghost();
+     //int l =3;
+    //printf("%d", l);
+    deplacer_pacman();
+    //A=vie_restante(pacman,area);
+    }*/
+
 return 0;
 
 }
